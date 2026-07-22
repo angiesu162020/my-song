@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>蘇研之自行舉辦歌單世界盃</title>
+  <style>
+    :root {
+      --primary-color: #5a7d7c;
+      --accent-color: #d97757;
+      --bg-color: #faf8f5;
+      --card-bg: #ffffff;
+      --text-color: #2b2b2b;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Heiti TC", "Microsoft JhengHei", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 5px;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      color: #767676;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    #game-container {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      padding: 30px 20px;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      box-sizing: border-box;
+      border: 1px solid #eae5df;
+    }
+
+    .progress-bar {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    .vs-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .song-btn {
+      flex: 1;
+      padding: 16px 12px;
+      font-size: 16px;
+      font-weight: 500;
+      border: 1.5px solid var(--primary-color);
+      border-radius: 12px;
+      background: white;
+      color: var(--primary-color);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      word-break: break-word;
+      line-height: 1.4;
+    }
+
+    .song-btn:active {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .vs-divider {
+      font-size: 18px;
+      color: var(--accent-color);
+      font-weight: bold;
+      font-style: italic;
+    }
+
+    #tree-container {
+      display: none;
+      width: 100%;
+      max-width: 1200px;
+      overflow-x: auto;
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      margin-top: 20px;
+      box-sizing: border-box;
+      border: 1px solid #eae5df;
+    }
+
+    .bracket {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      min-width: 920px;
+    }
+
+    .round {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      flex: 1;
+      margin: 0 6px;
+    }
+
+    .round-title {
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--primary-color);
+      font-size: 14px;
+    }
+
+    .matchup {
+      display: flex;
+      flex-direction: column;
+      margin: 6px 0;
+      border-left: 3px solid var(--primary-color);
+      padding-left: 6px;
+      background: #f7f6f2;
+      border-radius: 4px;
+    }
+
+    .team {
+      padding: 5px 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .team.winner {
+      font-weight: 600;
+      color: var(--accent-color);
+      background: #fceee9;
+    }
+
+    .champion-box {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 18px;
+      background: #f4f0ea;
+      border: 1.5px dashed var(--primary-color);
+      border-radius: 12px;
+    }
+
+    .restart-btn {
+      margin-top: 15px;
+      padding: 12px 24px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .restart-btn:hover {
+      opacity: 0.92;
+    }
+
+    #start-overlay {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>蘇研之自行舉辦歌單世界盃</h1>
+  <div class="subtitle">不可能有人無聊到自己做這個給自己玩</div>
+
+  <div id="game-container">
+    <div id="start-overlay">
+      <button class="restart-btn" onclick="initGame()" style="padding: 16px 32px; font-size: 18px;">點擊開始🎵</button>
+    </div>
+    
+    <div id="active-game" style="display: none;">
+      <div class="progress-bar" id="progress">準備中...</div>
+      <div class="vs-container">
+        <button class="song-btn" id="optionA" onclick="selectSong(0)"></button>
+        <div class="vs-divider">VS</div>
+        <button class="song-btn" id="optionB" onclick="selectSong(1)"></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tree-container">
+    <div class="champion-box">
+      <h2 style="margin: 0 0 10px 0; font-size: 20px;">你的冠軍：<span id="champion-name" style="color: var(--accent-color);"></span></h2>
+      <button class="restart-btn" onclick="initGame()">重新玩一次</button>
+    </div>
+    <div class="bracket" id="bracket-view"></div>
+  </div>
+
+  <script>
+    const rawSongs = [
+      "匱乏的模樣", "傾訴對象", "愚蠢的樂觀", "時差", "一片海", 
+      "好人", "討人厭的文藝少女", "就要去見你", "幻覺與直覺", "祝你⋯⋯", 
+      "背面", "向性", "一年到晚", "無人追問", "下雨了", 
+      "有些風景不屬於我", "今天", "告訴我", "陪我走到路口", "未必", 
+      "擁抱不一定總是互相", "某種", "告別的時候", "很抱歉", "假話", 
+      "禮物", "i can't deny", "現在還有時間嗎", "稍微溫暖", "眷戀", 
+      "我們是否還在同一個季節", "說說"
+    ];
+
+    let roundsData = [];
+    let currentRoundSongs = [];
+    let nextRoundSongs = [];
+    let currentPairIndex = 0;
+    
+    let roundNames = ["32強賽", "16強賽", "半準決賽 (8強)", "準決賽 (4強)", "決賽 (冠亞軍)"];
+    let currentRoundIndex = 0;
+
+    function shuffle(array) {
+      let arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function initGame() {
+      roundsData = [];
+      currentRoundIndex = 0;
+      currentPairIndex = 0;
+      nextRoundSongs = [];
+      
+      currentRoundSongs = shuffle(rawSongs);
+      
+      document.getElementById("start-overlay").style.display = "none";
+      document.getElementById("active-game").style.display = "block";
+      document.getElementById("game-container").style.display = "block";
+      document.getElementById("tree-container").style.display = "none";
+      
+      renderMatch();
+    }
+
+    function renderMatch() {
+      const totalPairs = currentRoundSongs.length / 2;
+      const progressText = `${roundNames[currentRoundIndex]} (${currentPairIndex + 1} / ${totalPairs})`;
+      document.getElementById("progress").innerText = progressText;
+
+      const songA = currentRoundSongs[currentPairIndex * 2];
+      const songB = currentRoundSongs[currentPairIndex * 2 + 1];
+
+      document.getElementById("optionA").innerText = songA;
+      document.getElementById("optionB").innerText = songB;
+    }
+
+    function selectSong(selectedIndex) {
+      const songA = currentRoundSongs[currentPairIndex * 2];
+      const songB = currentRoundSongs[currentPairIndex * 2 + 1];
+      const winner = selectedIndex === 0 ? songA : songB;
+
+      if (!roundsData[currentRoundIndex]) {
+        roundsData[currentRoundIndex] = [];
+      }
+      roundsData[currentRoundIndex].push({ songA, songB, winner });
+
+      nextRoundSongs.push(winner);
+      currentPairIndex++;
+
+      if (currentPairIndex * 2 >= currentRoundSongs.length) {
+        if (nextRoundSongs.length === 1) {
+          showResults(nextRoundSongs[0]);
+        } else {
+          currentRoundSongs = nextRoundSongs;
+          nextRoundSongs = [];
+          currentPairIndex = 0;
+          currentRoundIndex++;
+          renderMatch();
+        }
+      } else {
+        renderMatch();
+      }
+    }
+
+    function showResults(champion) {
+      document.getElementById("game-container").style.display = "none";
+      document.getElementById("tree-container").style.display = "block";
+      document.getElementById("champion-name").innerText = champion;
+
+      const bracketView = document.getElementById("bracket-view");
+      bracketView.innerHTML = "";
+
+      roundsData.forEach((roundMatches, rIndex) => {
+        const roundCol = document.createElement("div");
+        roundCol.className = "round";
+
+        const title = document.createElement("div");
+        title.className = "round-title";
+        title.innerText = roundNames[rIndex];
+        roundCol.appendChild(title);
+
+        roundMatches.forEach(m => {
+          const matchupDiv = document.createElement("div");
+          matchupDiv.className = "matchup";
+
+          const teamA = document.createElement("div");
+          teamA.className = "team " + (m.winner === m.songA ? "winner" : "");
+          teamA.innerText = m.songA;
+
+          const teamB = document.createElement("div");
+          teamB.className = "team " + (m.winner === m.songB ? "winner" : "");
+          teamB.innerText = m.songB;
+
+          matchupDiv.appendChild(teamA);
+          matchupDiv.appendChild(teamB);
+          roundCol.appendChild(matchupDiv);
+        });
+
+        bracketView.appendChild(roundCol);
+      });
+    }
+
+    window.onload = function() {
+      initGame();
+    };
+  </script>
+</body>
+</html>
